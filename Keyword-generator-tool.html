@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<title>Keyword Generator Tool</title>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Generate Infinity Keywords for SEO without any limit, its total free"/>
+<meta name="robots" content="index,follow" />
+<meta name="keywords" content="keywords generate,keywords generator for amazon,keywords generators,keywords generator for youtube,keywords generator from text,keywords generator adwords,keywords generator seo,keywords generator from url,keywords generator wordpress,keywords generator instagram,generate keywords for my website," />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<link href='https://techly360.com/how-to-create-keywords-generator-tool-in-blogger/' rel='canonical'/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="icon" href="favicon.png" sizes="16x16" type="image/png">
+<style>
+* {
+box-sizing: border-box;
+}
+html {
+background-color: #58a3c7;
+}
+body {
+margin: 0;
+padding: 60px 0;
+font-family: arial, sans-serif;
+background-color: #58a3c7;
+min-height: 100vh;
+}
+form {
+background-color: #fff;
+margin: auto;
+max-width: 640px;
+padding: 20px;
+border: 1px solid #ddd;
+border-radius: 5px;
+box-shadow: 0 3px 5px rgba(0,0,0,.2);
+h2 {
+margin-top: 0;
+text-align: center;
+}
+label {
+display: block;
+margin-bottom: 1em;
+[type=text] {
+font-size: inherit;
+display: block;
+width: 100%;
+padding: .5em;
+border-radius: 3px;
+border: 1px solid #ddd;
+}
+span {
+display: block;
+margin-bottom: .5em;
+font-weight: bold;
+}
+[type=checkbox] {
++ span {
+margin-bottom: 0;
+display: inline-block;
+vertical-align: middle;
+font-weight: normal;
+}
+}
+}
+button {
+display: block;
+font-size: inherit;
+width: 100%;
+height: 2em;
+padding: .5em;
+text-transform: uppercase;
+background-color: #4caf50;
+color: #fff;
+border-radius: 3px;
+border: 0;
+&:focus {
+outline: solid 1px #216f24;
+}
+}
+meter {
+display: block;
+width: 100%;
+height: 2em;
+margin-top: 1em;
+overflow: hidden;
+border-radius: 3px;
+position: relative;
+float: left;
+bottom: 1em;
+transform: translateY(-100%);
+transition: height .3s ease-in-out;
+&:after {
+content: '';
+display: block;
+box-shadow: inset 0 3px 5px rgba(0,0,0,.5);
+position: absolute;
+border-radius: 3px;
+width: 100%;
+height: 100%;
+z-index: 1;
+top: 0;
+left: 0;
+}
+&[value="0"],
+&[value="1"]{
+height: 0;
+}
+}
+}
+#results {
+background-color: #fff;
+max-width: 640px;
+margin: auto;
+padding: 20px;
+border: 1px solid #ddd;
+border-radius: 5px;
+box-shadow: 0 3px 5px rgba(0,0,0,.2);
+margin-top: 20px;
+&:empty {
+display: none;
+}
+}
+img {
+width: 100%;
+height: auto;
+}
+.ads {
+margin: auto;
+padding: 60px 0;
+max-width: 640px;
+box-shadow: 0 5px 15px rgba(0,0,0,.16);
+border-radius: 5px;
+margin-top: 1em;
+background: #fff;
+text-align: left;
+}
+</style>
+</head>
+<body style="background:#f20c4d;">
+<form action="" id="autocomplete">
+<h2>Free Keyword Generator</h2>
+<p>Using This Amazing Free Keywords Finder Tool You Can Find Unlimited Keyword Opportunities.</p>
+<label>
+<span>Keyword</span>
+<input type="text" name="keyword" id="keyword" placeholder="Keyword you want to know more about.">
+</label>
+<label>
+<input type="checkbox" name="iterate-alpha" id="alpha">
+<span>Include results for "keyword [a-z]".</span>
+</label>
+<label>
+<input type="checkbox" name="numbers">
+<span>Include results for "keyword [0-9]".</span>
+</label>
+<button type="submit">Get keywords!</button>
+<meter id="progress-meter" value=0 min=0 max=1></meter>
+</form>
+<div class="ads container">
+Place you Ad Code 2
+</div>
+<div id="results"></div>
+</div>
+<br>
+</body>
+<script>
+var endpoint = 'https://completion.amazon.com/search/complete?mkt=1&search-alias=aps&x=queryKeywordComplete&Result&q=';
+var keywords = [];
+var results = {};
+var queryIndex = 0;
+var meter = document.getElementById('progress-meter');
+var resultList = document.getElementById('results');
+var ranks = {};
+function updateProgress() {
+meter.value = queryIndex / keywords.length;
+}
+function queryKeywords() {
+queryIndex = 0;
+nextQuery();
+}
+function nextQuery() {
+updateProgress();
+if (queryIndex < keywords.length) {
+queryKeyword(keywords[queryIndex]);
+} else {
+displayResults();
+}
+}
+function displayResults() {
+var resultHTML = '';
+for ( var keyword in results ) {
+resultHTML += `<h2>${keyword}</h2>`;
+resultHTML += `<ul>`;
+results[keyword].forEach(function(item) {
+resultHTML += `<li title="${keyword}">${item}</li>`;
+})
+resultHTML += `</ul>`;
+}
+resultList.innerHTML = resultHTML;
+}
+function queryKeyword(keyword) {
+keyword = encodeURIComponent(keyword);
+// to get around cors and other formatting issues the result of this causes.
+var s = document.getElementById('az-autocomplete');
+if (s) {
+s.remove();
+}
+s = document.createElement("script");
+s.id = 'az-autocomplete';
+s.type = "text/javascript";
+s.src = `${endpoint}${keyword}`;
+document.body.append(s);
+}
+function queryKeywordComplete(){
+queryIndex++;
+storeQueryResult();
+nextQuery();
+}
+function storeQueryResult() {
+if (completion) {
+var keyword = completion[0];
+var result = completion[1];
+results[keyword] = result;
+}
+}
+function iterateAlphabet(keyword) {
+var list = [];
+for (var i = 0; i < 26; i++) {
+// 97 = a
+var char = String.fromCharCode(97 + i);
+list.push(`${keyword} ${char}`);
+}
+return list;
+}
+function iterateNumbers(keyword) {
+var list = [];
+for (var i = 0; i <= 9; i++ ) {
+list.push(`${keyword} ${i}`);
+}
+return list;
+}
+var queryForm = document.getElementById('autocomplete');
+queryForm.addEventListener('submit', function(e) {
+var keyword = e.target.keyword.value;
+var alpha = e.target.alpha.checked;
+var numbers = e.target.numbers.checked;
+keywords = [];
+results = {};
+ranks = [];
+if (alpha || numbers) {
+var height = Math.floor(Math.random() * (900 - 300) + 300);
+resultList.innerHTML = `<h2 style="text-align: center;">A kitten while you wait</h2><img src="https://placekitten.com/598/${height}">`;
+} else {
+resultList.innerHTML = '';
+}
+e.preventDefault();
+updateKeywords(keyword, alpha, numbers);
+queryKeywords();
+})
+function updateKeywords(keyword, addAlpha, addNumbers) {
+keywords.push(keyword);
+if (addAlpha) {
+var a = iterateAlphabet(keyword);
+keywords = keywords.concat(a);
+}
+if(addNumbers) {
+var n = iterateNumbers(keyword);
+keywords = keywords.concat(n);
+}
+}
+</script>
+</html>
